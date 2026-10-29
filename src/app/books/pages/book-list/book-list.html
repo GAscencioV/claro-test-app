@@ -1,0 +1,43 @@
+<header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+  <h2>Listado de Libros</h2>
+  <a routerLink="/books/new" style="background-color: #007bff; color: white; padding: 0.5rem 1rem; border-radius: 4px; text-decoration: none;">
+    + Agregar Nuevo Libro
+  </a>
+</header>
+
+@if (isLoading()) {
+  <p>Cargando libros...</p>
+} @else if (errorMessage()) {
+  <p style="color: red;">{{ errorMessage() }}</p>
+} @else if (books().length === 0) {
+  <p>No hay libros registrados en el sistema.</p>
+} @else {
+  <table style="width: 100%; border-collapse: collapse; text-align: left;">
+    <thead>
+      <tr style="border-bottom: 2px solid #ccc; background-color: #f1f1f1;">
+        <th style="padding: 0.75rem;">Título</th>
+        <th style="padding: 0.75rem;">Descripción</th>
+        <th style="padding: 0.75rem; text-align: center;">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (book of books(); track book.id) {
+        <tr style="border-bottom: 1px solid #e0e0e0;">
+          <td style="padding: 0.75rem; font-weight: 500;">{{ book.title }}</td>
+          <td style="padding: 0.75rem;">{{ book.description }}</td>
+          <td style="padding: 0.75rem; text-align: center; display: flex; gap: 0.5rem; justify-content: center;">
+            <a [routerLink]="['/books', book.id]" style="padding: 0.3rem 0.6rem; border: 1px solid #17a2b8; color: #17a2b8; border-radius: 4px; text-decoration: none;">
+              Ver Detalles
+            </a>
+            <a [routerLink]="['/books', book.id, 'edit']" style="padding: 0.3rem 0.6rem; border: 1px solid #ffc107; color: #856404; border-radius: 4px; text-decoration: none;">
+              Editar
+            </a>
+            <button (click)="onDelete(book.id)" style="padding: 0.3rem 0.6rem; border: 1px solid #dc3545; background: none; color: #dc3545; border-radius: 4px; cursor: pointer;">
+              Eliminar
+            </button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}

@@ -1,0 +1,45 @@
+<div style="margin-bottom: 1.5rem;">
+  <a routerLink="/books" style="text-decoration: none; color: #007bff;">&larr; Volver a la lista</a>
+</div>
+
+@if (isLoading()) {
+  <p>Cargando detalles...</p>
+} @else if (errorMessage()) {
+  <p style="color: red;">{{ errorMessage() }}</p>
+} @else if (book(); as b) {
+  <article style="border: 1px solid #ddd; border-radius: 6px; padding: 1.5rem; background-color: #fff;">
+    <header style="border-bottom: 1px solid #eee; padding-bottom: 1rem; margin-bottom: 1rem;">
+      <h2 style="margin: 0 0 0.5rem 0;">{{ b.title }}</h2>
+      <p style="margin: 0; color: #666; font-size: 0.95rem;">
+        Publicado: {{ b.publishDate | date:'longDate' }} | Páginas: {{ b.pageCount }}
+      </p>
+    </header>
+
+    <section style="margin-bottom: 1.5rem;">
+      <h3>Descripción</h3>
+      <p style="line-height: 1.6;">{{ b.description }}</p>
+
+      @if (b.excerpt) {
+        <h4>Extracto</h4>
+        <blockquote style="margin: 0; padding-left: 1rem; border-left: 3px solid #ccc; color: #555; font-style: italic;">
+          {{ b.excerpt }}
+        </blockquote>
+      }
+    </section>
+
+    <section style="border-top: 1px solid #eee; padding-top: 1rem;">
+      <h3>Información del Autor</h3>
+      @if (author(); as auth) {
+        <p><strong>Nombre:</strong> {{ auth.firstName }} {{ auth.lastName }}</p>
+      } @else {
+        <p style="color: #888;">No hay un autor registrado específicamente para este libro.</p>
+      }
+    </section>
+
+    <footer style="margin-top: 1.5rem; display: flex; gap: 0.75rem;">
+      <a [routerLink]="['/books', b.id, 'edit']" style="padding: 0.5rem 1rem; background-color: #ffc107; color: #212529; text-decoration: none; border-radius: 4px;">
+        Editar Libro
+      </a>
+    </footer>
+  </article>
+}

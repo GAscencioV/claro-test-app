@@ -1,0 +1,46 @@
+<header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+  <h2>Listado de Autores</h2>
+  <a routerLink="/authors/new" style="background-color: #007bff; color: white; padding: 0.5rem 1rem; border-radius: 4px; text-decoration: none;">
+    + Agregar Nuevo Autor
+  </a>
+</header>
+
+@if (isLoading()) {
+  <p>Cargando autores...</p>
+} @else if (errorMessage()) {
+  <p style="color: red;">{{ errorMessage() }}</p>
+} @else if (authors().length === 0) {
+  <p>No hay autores registrados en el sistema.</p>
+} @else {
+  <table style="width: 100%; border-collapse: collapse; text-align: left;">
+    <thead>
+      <tr style="border-bottom: 2px solid #ccc; background-color: #f1f1f1;">
+        <th style="padding: 0.75rem;">Nombre Completo</th>
+        <th style="padding: 0.75rem; text-align: center;">Libros Publicados</th>
+        <th style="padding: 0.75rem; text-align: center;">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (author of authors(); track author.id) {
+        <tr style="border-bottom: 1px solid #e0e0e0;">
+          <td style="padding: 0.75rem; font-weight: 500;">
+            {{ author.firstName }} {{ author.lastName }}
+          </td>
+          <td style="padding: 0.75rem; text-align: center;">
+            <span style="background-color: #e9ecef; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.9rem;">
+              {{ author.publishedBooksCount }}
+            </span>
+          </td>
+          <td style="padding: 0.75rem; text-align: center; display: flex; gap: 0.5rem; justify-content: center;">
+            <a [routerLink]="['/authors', author.id, 'edit']" style="padding: 0.3rem 0.6rem; border: 1px solid #ffc107; color: #856404; border-radius: 4px; text-decoration: none;">
+              Editar
+            </a>
+            <button (click)="onDelete(author.id)" style="padding: 0.3rem 0.6rem; border: 1px solid #dc3545; background: none; color: #dc3545; border-radius: 4px; cursor: pointer;">
+              Eliminar
+            </button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}

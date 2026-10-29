@@ -1,59 +1,93 @@
-# ClaroTestApp
+# ClaroTestApp - Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.2.1.
+Aplicacion web cliente desarrollada en Angular 20 que consume la API proxy en .NET para la gestion de libros y autores conectada a FakeRestAPI. Implementa arquitectura modular orientada a dominios con enrutamiento perezoso (Lazy Loading) y reactividad basada en Signals.
 
-## Development server
+---
 
-To start a local development server, run:
+## Requisitos Previos
 
-```bash
-ng serve
+* **Node.js:** Version 20.19.0 o superior (recomendado LTS v22).
+* **NPM:** Version 10.0 o superior.
+* **Angular CLI:** Version 20.x (opcional si se ejecutan scripts mediante npm).
+* **Backend Activo:** El servicio `ClaroTestBackend.API` debe estar ejecutandose (por defecto en `https://localhost:7054` o `http://localhost:5228`).
+
+---
+
+## Configuracion del Entorno
+
+La URL del backend en .NET se encuentra configurada en el archivo `src/environments/environment.ts`:
+
+```typescript
+export const environment = {
+  apiUrl: 'https://localhost:7054/api'
+};
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+> **Nota:** Si ejecutas el backend exclusivamente bajo HTTP simple sin SSL, actualiza la propiedad a `http://localhost:5228/api`.
 
-## Code scaffolding
+---
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Instalacion y Ejecucion
 
-```bash
-ng generate component component-name
-```
+### 1. Clonar e instalar dependencias
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Desde una terminal en la raiz del proyecto frontend:
 
 ```bash
-ng generate --help
+npm install
 ```
 
-## Building
-
-To build the project run:
+### 2. Iniciar el servidor de desarrollo
 
 ```bash
-ng build
+npm start
+```
+*(O de manera directa: `ng serve`)*
+
+### 3. Acceder a la aplicacion
+
+Abre tu navegador e ingresa a:
+```text
+http://localhost:4200/
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+---
 
-## Running unit tests
+## Arquitectura y Estructura del Proyecto
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+El codigo sigue el patron modular desacoplado por funciones y dominios de negocio:
 
-```bash
-ng test
+```text
+src/app/
+├── core/
+├── models/
+│   ├── author.model.ts      # Modelos y contratos de autores
+│   └── book.model.ts        # Modelos y contratos de libros
+├── books/                   # Modulo de libros
+│   ├── books.routes.ts      # Rutas hijas con Lazy Loading
+│   ├── pages/
+│   │   ├── book-list/       # Listado general de libros
+│   │   ├── book-detail/     # Detalle de libro y autor vinculado
+│   │   └── book-form/       # Formulario reactivo (Crear / Editar)
+│   └── services/
+│       └── book.service.ts  # Cliente HTTP tipado para /api/books
+├── authors/                 # Modulo de autores
+│   ├── authors.routes.ts    # Rutas hijas con Lazy Loading
+│   ├── pages/
+│   │   ├── author-list/     # Listado con calculo de libros asociados
+│   │   └── author-form/     # Formulario reactivo (Crear / Editar)
+│   └── services/
+│       └── author.service.ts# Cliente HTTP tipado para /api/authors
+└── shared/                  # Modulo compartido
+    └── components/
+        └── navbar/          # Barra de navegacion principal
 ```
 
-## Running end-to-end tests
+---
 
-For end-to-end (e2e) testing, run:
+## Caracteristicas Tecnicas Implementadas
 
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+* **Standalone Components:** Implementacion limpia sin archivos `NgModule` heredados.
+* **Lazy Loading:** Modulos `Books` y `Authors` cargados bajo demanda mediante `loadChildren` y `loadComponent`.
+* **State Management reactivo:** Uso de `signal()` de Angular para control de estado local (`isLoading`, `errorMessage`, colecciones y entidades).
+* **Consumo HTTP Optimizado:** `provideHttpClient(withFetch())

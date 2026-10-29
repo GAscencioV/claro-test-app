@@ -1,0 +1,83 @@
+<div style="max-width: 600px; margin: 0 auto;">
+  <div style="margin-bottom: 1.5rem;">
+    <a routerLink="/authors" style="text-decoration: none; color: #007bff;">&larr; Volver a la lista</a>
+  </div>
+
+  <h2>{{ isEditMode() ? 'Editar Autor' : 'Nuevo Autor' }}</h2>
+
+  @if (errorMessage()) {
+    <div style="padding: 0.75rem; background-color: #f8d7da; color: #721c24; border-radius: 4px; margin-bottom: 1rem;">
+      {{ errorMessage() }}
+    </div>
+  }
+
+  @if (isLoading() && isEditMode() && !form.value.firstName) {
+    <p>Cargando datos del autor...</p>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" style="display: flex; flex-direction: column; gap: 1rem;">
+
+      <div style="display: flex; gap: 1rem;">
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 0.25rem;">
+          <label for="firstName" style="font-weight: 500;">Nombre *</label>
+          <input
+            id="firstName"
+            type="text"
+            formControlName="firstName"
+            style="padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;"
+          />
+          @if (form.get('firstName')?.touched && form.get('firstName')?.hasError('required')) {
+            <small style="color: red;">El nombre es obligatorio.</small>
+          }
+        </div>
+
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 0.25rem;">
+          <label for="lastName" style="font-weight: 500;">Apellido *</label>
+          <input
+            id="lastName"
+            type="text"
+            formControlName="lastName"
+            style="padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;"
+          />
+          @if (form.get('lastName')?.touched && form.get('lastName')?.hasError('required')) {
+            <small style="color: red;">El apellido es obligatorio.</small>
+          }
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+        <label for="idBook" style="font-weight: 500;">Libro Asociado *</label>
+        <select
+          id="idBook"
+          formControlName="idBook"
+          style="padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;"
+        >
+          <option [ngValue]="null" disabled>Selecciona un libro...</option>
+          @for (book of books(); track book.id) {
+            <option [value]="book.id">{{ book.title }} (ID: {{ book.id }})</option>
+          }
+        </select>
+        @if (form.get('idBook')?.touched && form.get('idBook')?.hasError('required')) {
+          <small style="color: red;">Debes seleccionar un libro asociado.</small>
+        }
+      </div>
+
+      <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+        <button
+          type="submit"
+          [disabled]="isLoading()"
+          style="padding: 0.6rem 1.2rem; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;"
+        >
+          {{ isEditMode() ? 'Actualizar Autor' : 'Guardar Autor' }}
+        </button>
+
+        <a
+          routerLink="/authors"
+          style="padding: 0.6rem 1.2rem; background-color: #6c757d; color: white; text-decoration: none; border-radius: 4px;"
+        >
+          Cancelar
+        </a>
+      </div>
+
+    </form>
+  }
+</div>
